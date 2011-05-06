@@ -1,0 +1,23 @@
+.out {
+   float: left;
+   width: 200px;
+   border: 1px solid black;
+   padding: 3px;
+   margin-right: 16px;
+   height: 200px;
+   overflow: scroll;
+}
+.out p {
+   line-height: 1.1;
+   padding: 1px;
+   margin: 0;
+}
+
+form {
+   clear: both;
+}
+
+.req {
+   float: left;
+   width: 250px;
+}

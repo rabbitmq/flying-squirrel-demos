@@ -1,0 +1,205 @@
+$def with (squirrel_url, connection_url, ticket)
+<html>
+  <head>
+    <title>Channels demo</title>
+    <link rel="stylesheet" href="/static/screen.css"/>
+    <link rel="stylesheet" href="/static/jquery-ui-1.8.12.custom.css"/>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script>
+    <script type="text/javascript"
+            src="http://cdn.socket.io/stable/socket.io.js"></script>
+    <script type="text/javascript" src="static/flyingsquirrel-client.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div id="content">
+        <section>
+          <h1>Channels demo</h1>
+          <script type="text/javascript">
+            var conn_url = "${connection_url}";
+            var ticket = "${ticket}";
+
+            (function (jq) {
+              jq(function() {
+
+              jq('#demos').accordion({autoHeight: false});
+
+              var conn1 = new flyingsquirrel.Connection(conn_url, ticket);
+              var conn2 = new flyingsquirrel.Connection(conn_url, ticket);
+
+              function notify(innerhtml) {
+                jq('#notifications').append(innerhtml);
+              }
+
+              function showMsg(out, innerhtml) {
+                elem = jq(innerhtml);
+                elem.hide();
+                jq(out).append(elem);
+                elem.show("slide");
+              }
+
+              conn1.on_connect = function() {notify("<p>Connected 1</p>")};
+              conn2.on_connect = function() {notify("<p>Connected 2</p>")};
+
+              function sender(channel, form, conn) {
+                jq(form).bind('submit', function(event) {
+                  event.preventDefault();
+                  notify("<em>Sending on " + channel + " channel</em><br/>");
+                  conn.publish(channel, jq(form).children(':text').val());
+                  jq(form).children(':text').val('');
+                });
+              };
+
+              function receiver(channel, out, conn) {
+                conn.subscribe(channel, function(msg) {
+                  showMsg(out, '<p>' + msg + '<p>');
+                });
+              };
+
+              // Pub/Sub -- one publisher, and two subscribers
+              sender('pub', '#pubform', conn1);
+              receiver('sub', '#pubsub1', conn1);
+              receiver('sub', '#pubsub2', conn2);
+
+              // Push/Pull -- one er, pusher, and two, erm, pullers
+              sender('push', '#pushform', conn1);
+
+              receiver('pull', '#pushpull1', conn1);
+              receiver('pull', '#pushpull2', conn2);
+
+              // Req/Rep -- two requesters and two repliers,
+              // each both sends and receives
+
+              function requester(channel, form, out, conn) {
+                jq(form).bind('submit', function(event) {
+                  event.preventDefault();
+                  var question = jq(form).children(':text').val();
+                  showMsg(out, '<p>Q:' + question + '</p>');
+                  conn.request(channel, question, function(answer) {
+                    showMsg(out, '<p>A: ' + answer + '</p>');
+                  });
+                });
+              }
+
+              function replier(channel, form, out, conn) {
+                var answerer = null;
+                conn.serve(channel, function(question, _ch, _obj, reply) {
+                  showMsg(out, '<p>Q: ' + question + '</p>');
+                  answerer = reply;
+                });
+                jq(form).bind('submit', function(event) {
+                  event.preventDefault();
+                  if (answerer) {
+                    var answer = jq(form).children(':text').val();
+                    showMsg(out, '<p>A: ' + answer + '</p>');
+                    answerer(answer);
+                    answerer = null;
+                  }
+                  else {
+                    console.log('Answer to an unasked question ...');
+                  }
+                });
+              }
+
+              requester('req', '#reqform1', '#req1', conn1);
+              replier('rep', '#repform1', '#rep1', conn1);
+
+              requester('req', '#reqform2', '#req2', conn2);
+              replier('rep', '#repform2', '#rep2', conn2);
+
+              conn1.connect();
+              conn2.connect();
+              });
+            })(jQuery);
+          </script>
+
+          <div id="notifications">
+          </div>
+
+          <div id="demos">
+            <h2><a href="#">Pub/Sub</a></h2>
+            <div id="pubsubtab">
+            <p>
+              A <code>PUB</code> channel will send messages to all of the
+              <code>SUB</code> channels wired to the same resource.
+            </p>
+            <form id="pubform">
+              <input type="text" id="pubinput" name="pubinput"/>
+              <input type="submit" id="pubbutton" name="Publish"/>
+            </form>
+            <div class="out" id="pubsub1">
+            </div>
+            <div class="out" id="pubsub2">
+            </div>
+          </div>
+
+          <h2><a href="#">Push / pull</a></h2>
+          <div id="pushpulltab">
+            <p>
+              A <code>PUSH</code> channel will send messages to one of
+              the <code>PULL</code> channels wired to the same resource.
+            </p>
+            <form id="pushform">
+              <input type="text" id="pushinput" name="pushinput"/>
+              <input type="submit" id="pushbutton" name="Publish"/>
+            </form>
+            <div class="out" id="pushpull1">
+            </div>
+            <div class="out" id="pushpull2">
+            </div>
+          </div>
+
+          <h2><a href="#">Request / Reply</a></h2>
+          <div id="reqreptab">
+            <p>
+              A <code>REQ</code> channel will send messages to one of
+              the <code>REP</code> channels wired to the same
+              resource. The response from the <code>REP</code> channel
+              is routed back to the original <code>REQ</code> channel.
+            </p>
+
+            <div class="req">
+            <form id="reqform1">
+              <input type="text" id="reqinput1" name="reqinput"/>
+              <input type="submit" id="reqbutton1" name="Publish"/>
+            </form>
+            <div class="out" id="req1">
+            </div>
+            </div>
+
+            <div class="req">
+            <form id="reqform2">
+              <input type="text" id="reqinput2" name="reqinput"/>
+              <input type="submit" id="reqbutton2" name="Publish"/>
+            </form>
+            <div class="out" id="req2">
+            </div>
+            </div>
+
+            <div class="req">
+            <form id="repform1">
+              <input type="text" id="repinput1" name="repinput"/>
+              <input type="submit" id="repbutton1" name="Publish"/>
+            </form>
+            <div class="out" id="rep1">
+            </div>
+            </div>
+
+            <div class="req">
+            <form id="repform2">
+              <input type="text" id="repinput2" name="repinput"/>
+              <input type="submit" id="repbutton2" name="Publish"/>
+            </form>
+
+            <div class="out" id="rep2">
+            </div>
+            </div>
+          
+
+          </div>
+        </div>
+        </section>
+      </div>
+    </div>
+  </body>
+</html>
