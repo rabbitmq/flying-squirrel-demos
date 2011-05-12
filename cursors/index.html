@@ -1,0 +1,186 @@
+$def with (username, transport_url, ticket)
+<html>
+<head>
+  <title>Flying Squirrel - Cursors</title>
+  <script type="text/javascript"
+          src="http://code.jquery.com/jquery-1.6.min.js"></script>
+  <script type="text/javascript"
+          src="http://cdn.socket.io/stable/socket.io.js"></script>
+
+  <script type="text/javascript"
+          src="http://cdn.squirr.us/flyingsquirrel-client-0.0.0.js"></script>
+
+  <script type="text/javascript"
+          src="http://dygraphs.com/dygraph-combined.js"></script>
+
+  <style type="text/css">
+      #inbox {
+        border: 1px solid black;
+        width: 50em;
+        height: 20em;
+        padding: 4px;
+        overflow: auto;
+      }
+      .cursor {
+        height: 30px;
+        width: 30px;
+        position: absolute;
+        border: 1px solid grey;
+      }
+      #cursor_${ username } {
+        border: 1px solid red;
+      }
+
+  </style>
+</head>
+<body>
+  <h1>Flying Squirrel Example - latency test</h1>
+
+  <h3>Send</h3>
+  <div id="send_graph" style="height:200px; width:400px;"></div>
+  <h3>Recv</h3>
+  <div id="recv_graph" style="height:200px; width:400px;"></div>
+  <h3>Round trip time</h3>
+  <div id="latency_graph" style="height:200px; width:400px;"></div>
+
+
+  <div id="inbox"></div>
+
+
+  <script type="text/javascript">
+    function prepare_data() {
+        var data = [];
+        var d = new Date();
+        d.setMilliseconds(0);
+        var t = d.getTime() - 40*1000;
+        var i;
+        for (i=0; i<120; i++) {
+            data.push([new Date(t+333.33333*i), 0, 0, 0]);
+        }
+        return data;
+    }
+    function add_stat(stats, value) {
+        var d = new Date();
+        d.setMilliseconds( Math.floor(d.getMilliseconds()/333) * 333 );
+        if (Math.abs(stats[stats.length-1][0] - d) > 10) {
+            stats.push([d, 0, 0, 0]);
+            stats.shift();
+        }
+        if (value !== undefined) {
+            stats[stats.length-1][1] += value;
+            stats[stats.length-1][2] += value*value;
+            stats[stats.length-1][3] += 1;
+       }
+    }
+    function construct_graph(id, data, filter, user_opts) {
+        var opts = {
+            labels: ["Date", "X"],
+        };
+       var opts = $$.extend(opts, user_opts)
+       var graph_data = [];
+       $$(data).each(function(_, e) {
+           graph_data.push(filter(e));
+       });
+       var graph = new Dygraph(document.getElementById(id), graph_data, opts);
+       var updater = function (data) {
+           var graph_data = [];
+           $$(data).each(function(_, e) {
+               graph_data.push(filter(e));
+           });
+           graph.updateOptions({'file': graph_data});
+       };
+       return updater;
+    }
+    var send_data = prepare_data();
+    var send_graph = construct_graph('send_graph', send_data, function(row){return [row[0], row[1]];}, {});
+
+    var recv_data = prepare_data();
+    var recv_graph = construct_graph('recv_graph', recv_data, function(row){return [row[0], row[1]];}, {});
+
+    var latency_data = prepare_data();
+    var latency_graph = construct_graph('latency_graph', latency_data,
+      function(row){
+         var sum = row[1];
+         var sum_sq = row[2];
+         var cnt = row[3] || 1;
+         var avg = sum / cnt;
+         var stddev = Math.sqrt((sum_sq / cnt) - avg*avg);
+         return [row[0], [avg-stddev/2, avg, avg+stddev/2]];
+      },
+      {errorBars: true,
+            sigma: 1.0,
+            customBars: true
+       });
+
+    setInterval(function() {
+      add_stat(send_data, 0);
+      send_graph(send_data);
+
+      add_stat(recv_data, 0);
+      recv_graph(recv_data);
+
+      add_stat(latency_data, 0);
+      latency_graph(latency_data);
+    }, 333);
+  </script>
+
+
+  <script>
+    var transport_url = "${ transport_url }";
+    var ticket = "${ ticket }";
+    var opts = {debug: true};
+    var connection = new flyingsquirrel.Connection(transport_url, ticket, opts);
+
+    if( 'console' in window) {
+    connection.socket.on('connect', function(){console.log('on_connected');} );
+    connection.socket.on('disconnect', function(){console.log('on_disconnected');} );
+    connection.socket.on('connecting', function(){console.log('on_connecting');} );
+    connection.socket.on('connect_failed', function () {console.log('connect_failed');} );
+    connection.socket.on('reconnect', function () {console.log('reconnect');} );
+    connection.socket.on('reconnecting', function () {console.log('reconnecting');} );
+    connection.socket.on('reconnect_failed', function () {console.log('reconnect_failed');} );
+
+    connection.on_disconnect = function () {console.log('conn:on_disconnect');}
+    connection.on_connect = function () {console.log('conn:on_connect');}
+}
+    connection.connect();
+
+    connection.subscribe('ingress', function (msg, _channel, raw_msg) {
+          var latency = undefined;
+          if (raw_msg.identity === '${ username }') {
+             latency = (new Date()).getTime() - msg.t;
+          }
+          var m = {x:msg.x, y:msg.y, latency:latency,
+                   identity:raw_msg.identity};
+
+          var inbox = $$("#inbox");
+          while (inbox.children().length > 40) {
+              inbox.children().first().remove();
+          }
+          inbox.append($$("<code />").text(JSON.stringify(m)));
+          inbox.append("<br>");
+          inbox.scrollTop(inbox.scrollTop() + 100);
+
+          add_stat(recv_data, 3);
+
+          if (latency !== undefined) {
+             add_stat(latency_data, m.latency);
+          }
+
+          var id = "cursor_" + raw_msg.identity;
+          if ($$('#'+id).length === 0) {
+             $$("body").append('<div id="'+id+'" class="cursor"></div>');
+           }
+          $$('#'+id).offset({top:m.y-15, left:m.x-15});
+    });
+
+
+        $$(document).mousemove(function(e){
+            var message = {x:e.pageX, y:e.pageY, t: (new Date()).getTime()};
+            add_stat(send_data, 3);
+            connection.publish('egress', message);
+        });
+
+  </script>
+</body>
+</html>
