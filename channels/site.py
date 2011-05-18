@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import web
-import flyingsquirrel.client as squirrel
+import flyingsquirrel as squirrel
 
 from config import SERVICE_URL, SQUIRREL_SITE_URL
 
@@ -18,7 +18,7 @@ class Channels:
         return render.index(SQUIRREL_SITE_URL, conn_url, ticket)
 
 def create_endpoint():
-    client = squirrel.Client(SERVICE_URL)
+    client = squirrel.API(SERVICE_URL)
     endpoint = client.create_endpoint(
         'fixme',
         definition={'pub': ['pub', 'fixme_pubsub'],

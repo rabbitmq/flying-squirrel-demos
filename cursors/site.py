@@ -3,9 +3,9 @@
 import random
 import string
 import web
-import flyingsquirrel.client as squirrel
+import flyingsquirrel as squirrel
 
-from config import SQUIRREL_SITE_URL
+from config import SERVICE_URL
 
 
 urls = (
@@ -21,7 +21,7 @@ class Cursors:
         return render.index(username, transport_url, ticket)
 
 def create_endpoint():
-    client = squirrel.Client(SQUIRREL_SITE_URL)
+    client = squirrel.API(SERVICE_URL)
     endpoint = client.create_endpoint(
         "flying_cursors",
         definition = {'egress': ['pub', 'flying_cursors'],
