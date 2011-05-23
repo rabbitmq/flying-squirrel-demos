@@ -33,11 +33,10 @@ class Connection(object):
         self.inbound = self._state_wait_for_nick
 
     def _state_wait_for_nick(self, nick):
-        nick = nick.capitalize()
-        send_to_connection(self.identity, "Hello %s!" % (nick,))
-        send_to_connection(self.identity, "Type 'help' to see help.")
-        self.nick = nick
-        actor = user_by_nick(nick)
+        self.nick = nick.capitalize()
+        send_to_connection(self.identity,
+                           open('logo.txt').read() % {'nick': self.nick})
+        actor = user_by_nick(self.nick)
         actor.connections.add(self.identity)
         actor.save()
         self.inbound = self._state_wait_for_command

@@ -1,3 +1,5 @@
 ~$
 .pyc$
 channels/config.py
+/venv$
+distribute-0.6.10.tar.gz$
