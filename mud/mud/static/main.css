@@ -35,3 +35,11 @@ body {
     border: solid 1px #33677F;
 
 }
+
+.room_name {
+    text-weight: bolder;
+    color: #EEE;
+}
+.room_exits {
+    color: #DDD;
+}

@@ -1,4 +1,4 @@
-
+&nbsp;
 
            \.   \.      __,-"-.__      ./   ./ 
        \.   \`.  \`.-'"" _,="=._ ""`-.'/  .'/   ./ 
@@ -18,5 +18,5 @@
                         ` | | | ' 
                           ` | ' 
 
-Hello %(nick)s!
+Welcome {{ actor.nick }}!
 Type 'help' to see help.

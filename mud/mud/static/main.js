@@ -3,7 +3,7 @@ function scroll() {
 }
 
 function write(msg) {
-    $("#box").text( $("#box").text() + msg + '\n');
+    $("#box").append( msg + '\n');
     scroll();
 }
 
@@ -12,9 +12,10 @@ $(function () {
       $("#input").focus();
 
       // On click, anywhere, focus input box.
-      $("html").focus(function(){
+      $("html").click(function(){
                           scroll();
                           $("#input").focus();
+                          return false;
                       });
 });
 
@@ -38,7 +39,7 @@ $(function () {
                             return false;
                         });
 
-      conn.publish('pipe', '');
+      conn.publish('pipe', 'aaa');
       conn.subscribe('pipe', function(msg) {
                          write(msg);
                      });

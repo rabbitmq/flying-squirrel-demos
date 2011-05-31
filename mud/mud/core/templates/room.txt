@@ -1,0 +1,6 @@
+{% load extras %}
+<div class="room_name">{{ room.name }}</div>
+{{ room.description|break }}
+{% for c in room.char_set.all %}
+   {{ c.nick }} stands here.{% endfor %}
+<div class="room_exits">[Exits:{% for e in room.exits.all %} {{ e.keyword }}{% empty %} none{% endfor %}]</div>
