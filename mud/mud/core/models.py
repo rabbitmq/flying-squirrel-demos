@@ -11,12 +11,13 @@ class Room(models.Model):
         for char in self.char_set.all():
             char.send(msg)
 
-    def render(self, tname, ctx={}):
+    def render(self, tname, ctx={}, skip=[]):
         c = {'room':self}
         c.update(ctx)
         data = render_to_string(tname, c).strip()
-        for char in self.char_set.all():
-            char._raw_send(data)
+        for ch in self.char_set.all():
+            if ch not in skip:
+                ch._raw_send(data)
 
     def exit(self, direction):
         try:
@@ -69,10 +70,10 @@ class Char(models.Model):
         return cls.objects.filter(connection__reply_to__isnull=False).distinct()
 
     @classmethod
-    def broadcast(cls, tname, ctx, skip=None):
+    def broadcast(cls, tname, ctx, skip=[]):
         data = render_to_string(tname, ctx).strip()
         for ch in cls.online():
-            if ch != skip:
+            if ch not in skip:
                 ch._raw_send(data)
 
 class Connection(models.Model):

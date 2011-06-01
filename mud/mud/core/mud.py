@@ -70,13 +70,23 @@ def do_look(actor, args=[], **kwargs):
     room = None
     if len(args) == 0:
         do_describe_room(actor, actor.room)
+        return
+
+    what = args[0]
+    room = actor.room.exit(what)
+    if room is not None:
+        actor.render('room_brief.txt', {'room': room})
+        return
+    try:
+        target = actor.room.char_set.get(nick__exact=what.capitalize())
+    except models.Char.DoesNotExist:
+        target = None
+    if target:
+        actor.room.render("stare.txt", {'actor':actor, 'target': target}, skip=[actor, target])
+        target.render("stare_at_you.txt", {'actor': actor})
+        actor.render("look_at_char.txt", {'target': target})
     else:
-        what = args[0]
-        room = actor.room.exit(what)
-        if room is None:
-            actor.send("You see nothing there.")
-        else:
-            actor.render('room_brief.txt', {'room': room})
+        actor.send("You see nothing there.")
 
 def do_go(actor, direction=None, **kwargs):
     e = actor.room.exit(direction)
