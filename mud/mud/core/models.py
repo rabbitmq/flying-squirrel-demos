@@ -42,6 +42,8 @@ class Char(models.Model):
     modified = models.DateField(auto_now=True)
     nick = models.CharField(max_length=32)
     room = models.ForeignKey(Room)
+    reply = models.ForeignKey("self", null=True)
+
 
     def render(self, tname, ctx={}):
         c = {'actor':self, 'room':self.room}

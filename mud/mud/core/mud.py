@@ -107,12 +107,44 @@ def do_who(actor, **kwargs):
     """ Who's online? """
     actor.render('who.txt', {'chars': models.Char.online()})
 
+def do_tell(actor, args=[], **kwargs):
+    """ tell somebody something """
+    if len(args) < 2:
+        actor.send("What should I tell to who?")
+        return
+    try:
+        target = models.Char.objects.get(nick__exact=args[0].capitalize())
+    except models.Char.DoesNotExist:
+        actor.send("Can't find " + args[0])
+        return
+    text = ' '.join(args[1:])
+    target.render('tell.txt', {'actor':actor, 'text':text})
+    target.reply = actor
+    target.save()
+    actor.reply = target
+    actor.save()
+
+def do_reply(actor, args=[], **kwargs):
+    """ reply to a tell """
+    if not actor.reply:
+        actor.send("Who should I reply to?")
+        return
+    if len(args) < 1:
+        actor.send("What should I tell %s about?" % (actor.reply,))
+        return
+    text = ' '.join(args)
+    actor.reply.render('tell.txt', {'actor':actor, 'text':text})
+    actor.reply.reply = actor
+    actor.reply.save()
+
 COMMANDS=OrderedDict([
     ('help', do_help),
     ('say', do_say),
     ('shout', do_shout),
     ('look', do_look),
     ('who', do_who),
+    ('tell', do_tell),
+    ('reply', do_reply),
     ('n', (do_go, {'direction': 'n'})),
     ('e', (do_go, {'direction': 'e'})),
     ('w', (do_go, {'direction': 'w'})),
