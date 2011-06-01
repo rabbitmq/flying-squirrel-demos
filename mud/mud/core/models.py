@@ -11,8 +11,10 @@ class Room(models.Model):
         for char in self.char_set.all():
             char.send(msg)
 
-    def render(self, tname, ctx):
-        data = render_to_string(tname, ctx).strip()
+    def render(self, tname, ctx={}):
+        c = {'room':self}
+        c.update(ctx)
+        data = render_to_string(tname, c).strip()
         for char in self.char_set.all():
             char._raw_send(data)
 
@@ -21,6 +23,7 @@ class Room(models.Model):
             return self.exits.get(keyword__exact=direction).dst
         except Exit.DoesNotExist:
             return None
+
 
 
 class Exit(models.Model):
@@ -39,10 +42,8 @@ class Char(models.Model):
     nick = models.CharField(max_length=32)
     room = models.ForeignKey(Room)
 
-    def render(self, tname, ctx=None):
-        c = {}
-        if ctx is None: ctx={}
-        c.update({'actor':self, 'room':self.room})
+    def render(self, tname, ctx={}):
+        c = {'actor':self, 'room':self.room}
         c.update(ctx)
         self._raw_send(render_to_string(tname, c).strip())
 
@@ -53,11 +54,9 @@ class Char(models.Model):
         for conn in self.connection_set.all():
             conn.send(raw_msg)
 
-    def render_to_others(self, tname, ctx=None):
-        c = {}
-        if ctx is None: ctx={}
+    def render_to_others(self, tname, ctx={}):
+        c = {'actor':self, 'room':self.room}
         c.update(ctx)
-        c.update({'actor':self, 'room':self.room})
         data = render_to_string(tname, c).strip()
         for ch in self.room.char_set.all():
             if ch == self:
@@ -68,6 +67,13 @@ class Char(models.Model):
     @classmethod
     def online(cls):
         return cls.objects.filter(connection__reply_to__isnull=False).distinct()
+
+    @classmethod
+    def broadcast(cls, tname, ctx, skip=None):
+        data = render_to_string(tname, ctx).strip()
+        for ch in cls.online():
+            if ch != skip:
+                ch._raw_send(data)
 
 class Connection(models.Model):
     def __unicode__(self):

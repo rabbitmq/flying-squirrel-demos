@@ -54,10 +54,13 @@ def do_help(actor, args=None, **kwargs):
     actor.render("help.txt", {'funs':funs})
 
 def do_say(actor, args=None, **kwargs):
-    """ Say something. """
-    msg = "%s says: %s" % (actor.nick, ' '.join(args))
-    for target in models.Char.objects.all():
-        target.send(msg)
+    """ Say something within the room. """
+    actor.render_to_others("say.txt", {'text':' '.join(args)})
+
+def do_shout(actor, args=None, **kwargs):
+    """ Shout to everyone. """
+    models.Char.broadcast("shout.txt", {'actor': actor, 'text':' '.join(args)})
+
 
 def do_describe_room(actor, room):
     actor.render('room.txt', {'room': room})
@@ -97,6 +100,7 @@ def do_who(actor, **kwargs):
 COMMANDS=OrderedDict([
     ('help', do_help),
     ('say', do_say),
+    ('shout', do_shout),
     ('look', do_look),
     ('who', do_who),
     ('n', (do_go, {'direction': 'n'})),
