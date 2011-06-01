@@ -1,7 +1,6 @@
 from collections import defaultdict
 from ..ordereddict import OrderedDict
 from . import models
-from django.template.loader import render_to_string
 
 def inbound(conn, msg):
     if conn.state == 'connected':
@@ -19,7 +18,7 @@ def inbound(conn, msg):
         conn.char = actor
         conn.state = "commands"
         conn.save()
-        actor.send(render_to_string('logo.txt', {'actor': actor}))
+        actor.render('logo.txt')
         if actor.room_id == 1:
             do_move(actor, models.Room.objects.get(id__exact=2))
             actor.save()
@@ -60,31 +59,35 @@ def do_say(actor, args=None, **kwargs):
     for target in models.Char.objects.all():
         target.send(msg)
 
-def do_look(actor, room=None, args=[], **kwargs):
-    """ Describe what's around you. """
-    if not room and len(args) == 1:
-        e = actor.room.exit(args[0])
-        if e:
-            room = e
+def do_describe_room(actor, room):
+    actor.render('room.txt', {'room': room})
 
-    if room is None:
-        room = actor.room
-    actor.send(render_to_string('room.txt', {'actor': actor,
-                                             'room': room}))
+def do_look(actor, args=[], **kwargs):
+    """ Describe what's around you. """
+    room = None
+    if len(args) == 0:
+        do_describe_room(actor, actor.room)
+    else:
+        what = args[0]
+        room = actor.room.exit(what)
+        if room is None:
+            actor.send("You see nothing there.")
+        else:
+            actor.render('room_brief.txt', {'room': room})
 
 def do_go(actor, direction=None, **kwargs):
     e = actor.room.exit(direction)
     if not e:
         actor.send("You can't go there.")
     else:
-        do_move(actor, e.dst, direction=direction)
+        do_move(actor, e, direction=direction)
         actor.save()
 
 def do_move(actor, dst_room, direction=None):
     src_room = actor.room
     actor.render_to_others("bamf_out.txt", {'direction':direction})
     dst_room.render("bamf_in.txt", {'actor': actor, 'direction':direction})
-    do_look(actor, room=dst_room)
+    do_describe_room(actor, dst_room)
     actor.room = dst_room
 
 def do_who(actor, **kwargs):

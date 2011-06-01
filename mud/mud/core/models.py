@@ -18,10 +18,9 @@ class Room(models.Model):
 
     def exit(self, direction):
         try:
-            e = self.exits.get(keyword__exact=direction)
+            return self.exits.get(keyword__exact=direction).dst
         except Exit.DoesNotExist:
-            e = None
-        return e
+            return None
 
 
 class Exit(models.Model):
@@ -43,8 +42,8 @@ class Char(models.Model):
     def render(self, tname, ctx=None):
         c = {}
         if ctx is None: ctx={}
-        c.update(ctx)
         c.update({'actor':self, 'room':self.room})
+        c.update(ctx)
         self._raw_send(render_to_string(tname, c).strip())
 
     def send(self, msg):
@@ -68,7 +67,7 @@ class Char(models.Model):
 
     @classmethod
     def online(cls):
-        return cls.objects.filter(connection__reply_to__isnull=False)
+        return cls.objects.filter(connection__reply_to__isnull=False).distinct()
 
 class Connection(models.Model):
     def __unicode__(self):

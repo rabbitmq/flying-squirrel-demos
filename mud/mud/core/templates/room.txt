@@ -2,5 +2,5 @@
 <div class="room_name">{{ room.name }}</div>
 {{ room.description|break }}
 {% for c in room.char_set.all %}
-   {{ c.nick }} stands here.{% endfor %}
+{% if c != actor %} {{ c.nick }} stands here.{% else %} You stand here. {% endif %} {% endfor %}
 <div class="room_exits">[Exits:{% for e in room.exits.all %} {{ e.keyword }}{% empty %} none{% endfor %}]</div>
