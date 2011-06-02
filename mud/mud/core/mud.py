@@ -9,7 +9,7 @@ def inbound(conn, msg):
         conn.state = "username"
         conn.save()
     elif conn.state == 'username':
-        nick = msg.capitalize()
+        nick = msg.strip().capitalize()
         try:
             actor = models.Char.objects.get(nick__exact=nick)
         except models.Char.DoesNotExist:
@@ -56,6 +56,7 @@ def do_help(actor, args=None, **kwargs):
 def do_say(actor, args=None, **kwargs):
     """ Say something within the room. """
     actor.render_to_others("say.txt", {'text':' '.join(args)})
+    actor.render("say_to.txt", {'text':' '.join(args)})
 
 def do_shout(actor, args=None, **kwargs):
     """ Shout to everyone. """
@@ -89,6 +90,7 @@ def do_look(actor, args=[], **kwargs):
         actor.send("You see nothing there.")
 
 def do_go(actor, direction=None, **kwargs):
+    """ Go in a direction. """
     e = actor.room.exit(direction)
     if not e:
         actor.send("You can't go there.")
@@ -107,8 +109,25 @@ def do_who(actor, **kwargs):
     """ Who's online? """
     actor.render('who.txt', {'chars': models.Char.online()})
 
+def _do_tell(actor, target, msg):
+    if not msg:
+        actor.send("What should I tell %s about?" % (target,))
+        return
+    if not target:
+        actor.send("Who should I tell it?")
+        return
+    if target.connection_set.count() == 0:
+        actor.send("I don't think %s can hear you now." % (target,))
+        return
+    target.render('tell.txt', {'actor':actor, 'text':msg})
+    actor.render('tell_to.txt', {'target':target, 'text':msg})
+    target.reply = actor
+    target.save()
+    actor.reply = target
+    actor.save()
+
 def do_tell(actor, args=[], **kwargs):
-    """ tell somebody something """
+    """ Tell somebody something. """
     if len(args) < 2:
         actor.send("What should I tell to who?")
         return
@@ -117,25 +136,11 @@ def do_tell(actor, args=[], **kwargs):
     except models.Char.DoesNotExist:
         actor.send("Can't find " + args[0])
         return
-    text = ' '.join(args[1:])
-    target.render('tell.txt', {'actor':actor, 'text':text})
-    target.reply = actor
-    target.save()
-    actor.reply = target
-    actor.save()
+    _do_tell(actor, target, ' '.join(args[1:]))
 
 def do_reply(actor, args=[], **kwargs):
-    """ reply to a tell """
-    if not actor.reply:
-        actor.send("Who should I reply to?")
-        return
-    if len(args) < 1:
-        actor.send("What should I tell %s about?" % (actor.reply,))
-        return
-    text = ' '.join(args)
-    actor.reply.render('tell.txt', {'actor':actor, 'text':text})
-    actor.reply.reply = actor
-    actor.reply.save()
+    """ Reply to a tell. """
+    _do_tell(actor, actor.reply, ' '.join(args))
 
 COMMANDS=OrderedDict([
     ('help', do_help),

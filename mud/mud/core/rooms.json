@@ -36,7 +36,15 @@
         "model": "core.room", 
         "fields": {
             "name": "Back alley", 
-            "description": "Evidently this is the neighbourhood for which the word \"insalubrious\" was coined. There's evidence of life here, but only in the form of recently half-eaten dead things. Overflow from the drains is pooling on the pavement and appears to be slowly dissolving it. There's very little lighting down this alley, and frankly it would be better if there were none.\r\n\r\nThe actors' entrance has shut behind you, prompting a brief panic."
+            "description": "Evidently this is the neighbourhood for which the word \"insalubrious\" was coined. There's evidence of life here, but only in the form of recently half-eaten dead things. Overflow from the drains is pooling on the pavement and appears to be slowly dissolving it. There's very little lighting down this alley, and frankly it would be better if there were none.\r\n\r\nThe door back inside snicks shut, prompting a brief panic. But it's not locked."
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "core.room", 
+        "fields": {
+            "name": "Really dark bit of the alley", 
+            "description": "It's very dark here. Which is probably a small mercy. All you can hear is the gentle drip, drip, hiss of battery acid, and the scrape of tiny claws on concrete. Lots and lots of tiny claws."
         }
     }, 
     {
@@ -91,6 +99,24 @@
             "src": 5, 
             "dst": 4, 
             "keyword": "n"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "core.exit", 
+        "fields": {
+            "src": 5, 
+            "dst": 6, 
+            "keyword": "w"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "core.exit", 
+        "fields": {
+            "src": 6, 
+            "dst": 5, 
+            "keyword": "e"
         }
     }
 ]

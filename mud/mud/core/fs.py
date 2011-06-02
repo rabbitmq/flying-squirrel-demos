@@ -58,7 +58,10 @@ def inbound_messages(msg, channel=None, msgobj=None, **kwargs):
     except models.Connection.DoesNotExist:
         conn = models.Connection(reply_to=reply_to)
     conn.save()
-    mud.inbound(conn, msg)
+    if msg != "\x00":
+        mud.inbound(conn, msg)
+    else:
+        conn.send("\x00")
     flush()
 
 def flush():

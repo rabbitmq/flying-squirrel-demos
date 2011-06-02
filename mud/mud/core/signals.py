@@ -10,7 +10,7 @@ tick_event = django.dispatch.Signal(providing_args=["curr_time"])
 
 
 def cleanup_connections(sender, curr_time=None, **kwargs):
-    t0 = curr_time - datetime.timedelta(seconds = 60*10)
+    t0 = curr_time - datetime.timedelta(seconds = 10)
     for conn in models.Connection.objects.filter(modified__lt=t0):
         actor = conn.char
         log.info(" [*] %s (%s) disconnected", actor, conn.reply_to)
