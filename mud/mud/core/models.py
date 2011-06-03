@@ -40,11 +40,14 @@ class Char(models.Model):
     def __unicode__(self):
         return "%s" % (self.nick,)
 
-    modified = models.DateField(auto_now=True)
+    modified = models.DateTimeField(auto_now=True)
     nick = models.CharField(max_length=32)
     room = models.ForeignKey(Room)
     reply = models.ForeignKey("self", null=True, blank=True)
     is_npc = models.BooleanField(default=False)
+
+    description = models.TextField()
+
 
     def render(self, tname, ctx={}):
         c = {'actor':self, 'room':self.room}
