@@ -25,3 +25,6 @@ clean:
 		./manage.py dumpdata --format=json --indent=4 > /tmp/backup.json
 	find . -name \*pyc|xargs --no-run-if-empty rm
 	#rm db.sqlite
+
+poll:
+	while [ 1 ]; do curl http://mmajkowski.eng.vmware.com:8000/tick; echo; sleep 10; done

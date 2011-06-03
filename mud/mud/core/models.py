@@ -35,6 +35,7 @@ class Exit(models.Model):
     src = models.ForeignKey(Room, related_name='exits')
     dst = models.ForeignKey(Room, related_name='entries')
 
+
 class Char(models.Model):
     def __unicode__(self):
         return "%s" % (self.nick,)
@@ -42,8 +43,8 @@ class Char(models.Model):
     modified = models.DateField(auto_now=True)
     nick = models.CharField(max_length=32)
     room = models.ForeignKey(Room)
-    reply = models.ForeignKey("self", null=True)
-
+    reply = models.ForeignKey("self", null=True, blank=True)
+    is_npc = models.BooleanField(default=False)
 
     def render(self, tname, ctx={}):
         c = {'actor':self, 'room':self.room}
@@ -51,7 +52,12 @@ class Char(models.Model):
         self._raw_send(render_to_string(tname, c).strip())
 
     def send(self, msg):
-        return self.render('_default.txt', {'text': msg})
+        self.render('_default.txt', {'text': msg})
+
+    def send_to_others(self, msg):
+        data = render_to_string('_default.txt', {'actor': self, 'text': msg}).strip()
+        for ch in self.others_in_room():
+            ch._raw_send(data)
 
     def _raw_send(self, raw_msg):
         for conn in self.connection_set.all():
@@ -61,11 +67,13 @@ class Char(models.Model):
         c = {'actor':self, 'room':self.room}
         c.update(ctx)
         data = render_to_string(tname, c).strip()
+        for ch in self.others_in_room():
+            ch._raw_send(data)
+
+    def others_in_room(self):
         for ch in self.room.char_set.all():
-            if ch == self:
-                pass
-            else:
-                ch._raw_send(data)
+            if ch is not self:
+                yield ch
 
     @classmethod
     def online(cls):
@@ -78,6 +86,20 @@ class Char(models.Model):
             if ch not in skip:
                 ch._raw_send(data)
 
+    def connected(self):
+        if self.is_npc:
+            return True
+        return self.connection_set.count() > 0
+
+
+class Npc(models.Model):
+    def __unicode__(self):
+        return "[%s]" % (self.char,)
+
+    codepath = models.CharField(max_length=128)
+    char = models.OneToOneField(Char)
+
+
 class Connection(models.Model):
     def __unicode__(self):
         return "%s --> %s" % (self.reply_to, self.char)
@@ -89,6 +111,11 @@ class Connection(models.Model):
 
     def send(self, msg):
         _outbound(self.reply_to, msg)
+
+    def render(self, tname, ctx={}):
+        c = {'connection':self}
+        c.update(ctx)
+        self.send(render_to_string(tname, c).strip())
 
 
 OUTBOUND={}

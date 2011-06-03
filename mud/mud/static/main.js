@@ -26,12 +26,12 @@ $(function () {
       var to = null;
       var ping = function() {
           conn.publish('pipe', "\x00");
-          to = setTimeout(ping, 5000);
+          to = setTimeout(ping, 14000);
       };
 
       conn.on_connect = function() {
           conn.egress_buffer = [];
-          to = setTimeout(ping, 5000);
+          to = setTimeout(ping, 14000);
           conn.publish('pipe', 'hello');
           //write("Connected.");
       };
@@ -48,7 +48,7 @@ $(function () {
                             conn.publish('pipe', val);
                             scroll();
                             clearTimeout(to);
-                            to = setTimeout(ping, 5000);
+                            to = setTimeout(ping, 14000);
                             return false;
                         });
 

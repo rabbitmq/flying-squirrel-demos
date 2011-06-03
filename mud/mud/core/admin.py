@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Room, Exit, Char, Connection
+from .models import Room, Exit, Char, Connection, Npc
 
 class SrcInline(admin.TabularInline):
     verbose_name_plural = 'Exits'
@@ -20,8 +20,9 @@ admin.site.register(Room, RoomAdmin)
 
 
 admin.site.register(Exit)
-
 admin.site.register(Char)
-
 admin.site.register(Connection)
+
+
+admin.site.register(Npc)
 

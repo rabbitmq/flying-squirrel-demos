@@ -18,5 +18,9 @@
                         ` | | | ' 
                           ` | ' 
 
+{% if not actor.is_npc %}
 Welcome {{ actor.nick }}!
 Type 'help' to see help.
+{% else %}
+Connected to a NPC body. You are mute
+{% endif %}
