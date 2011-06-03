@@ -135,7 +135,7 @@
         "pk": 1, 
         "model": "core.npc", 
         "fields": {
-            "char": 13, 
+            "char": 1, 
             "codepath": "mud.npc.prompter"
         }
     } 
