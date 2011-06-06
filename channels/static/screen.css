@@ -1,3 +1,18 @@
+#demos {
+   float: left;
+   margin-left: 20px;
+   height: 100%;
+   width: 720px;
+}
+
+#notifications {
+   float: left;
+   height: 100%;
+   width: 220px;
+   margin-left: 20px;
+   padding: 4px;
+}
+
 .out {
    float: left;
    width: 200px;

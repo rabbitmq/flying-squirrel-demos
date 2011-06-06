@@ -14,10 +14,6 @@ $def with (squirrel_url, connection_url, ticket)
             src="http://cdn.squirr.us/flyingsquirrel-client-0.0.0.js"></script>
   </head>
   <body>
-    <div class="container">
-      <div id="content">
-        <section>
-          <h1>Channels demo</h1>
           <script type="text/javascript">
             var conn_url = "${connection_url}";
             var ticket = "${ticket}";
@@ -25,7 +21,7 @@ $def with (squirrel_url, connection_url, ticket)
             (function (jq) {
               jq(function() {
 
-              jq('#demos').accordion({autoHeight: false});
+              jq('#demos').tabs();
 
               var conn1 = new flyingsquirrel.Connection(conn_url, ticket);
               var conn2 = new flyingsquirrel.Connection(conn_url, ticket);
@@ -116,12 +112,16 @@ $def with (squirrel_url, connection_url, ticket)
             })(jQuery);
           </script>
 
-          <div id="notifications">
-          </div>
-
           <div id="demos">
-            <h2><a href="#">Pub/Sub</a></h2>
+            <ul>
+              <li><a href="#pubsubtab">Publish / Subscribe</a></li>
+              <li><a href="#pushpulltab">Push / Pull</a></li>
+              <li><a href="#reqreptab">Request / Reply</a></li>
+            </ul>
+
+
             <div id="pubsubtab">
+            <h2>Publist / Subscribe</h2>
             <p>
               A <code>PUB</code> channel will send messages to all of the
               <code>SUB</code> channels wired to the same resource.
@@ -136,8 +136,8 @@ $def with (squirrel_url, connection_url, ticket)
             </div>
           </div>
 
-          <h2><a href="#">Push / pull</a></h2>
           <div id="pushpulltab">
+          <h2>Push / Pull</h2>
             <p>
               A <code>PUSH</code> channel will send messages to one of
               the <code>PULL</code> channels wired to the same resource.
@@ -152,8 +152,8 @@ $def with (squirrel_url, connection_url, ticket)
             </div>
           </div>
 
-          <h2><a href="#">Request / Reply</a></h2>
           <div id="reqreptab">
+          <h2>Request / Reply</h2>
             <p>
               A <code>REQ</code> channel will send messages to one of
               the <code>REP</code> channels wired to the same
@@ -197,12 +197,11 @@ $def with (squirrel_url, connection_url, ticket)
             <div class="out" id="rep2">
             </div>
             </div>
-          
 
           </div>
-        </div>
-        </section>
-      </div>
-    </div>
+          </div>
+          <div id="notifications" class="ui-corner-all ui-widget ui-widget-content">
+            <h3>Log messages</h3>
+          </div>
   </body>
 </html>
