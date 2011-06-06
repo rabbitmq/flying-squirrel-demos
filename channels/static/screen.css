@@ -15,16 +15,14 @@
 
 .out {
    float: left;
-   width: 200px;
+   width: 220px;
    border: 1px solid black;
    padding: 3px;
-   margin-right: 16px;
-   height: 200px;
-   overflow: scroll;
+   margin-left: 20px;
 }
-.out p {
+.out p, #notifications p {
    line-height: 1.1;
-   padding: 1px;
+   padding: 2px;
    margin: 0;
 }
 
@@ -32,7 +30,15 @@ form {
    clear: both;
 }
 
+input[type=text] {
+   width: 140px;
+}
+
 .req {
    float: left;
    width: 250px;
+}
+
+#pubform, #pushform {
+   margin-left: 180px;
 }

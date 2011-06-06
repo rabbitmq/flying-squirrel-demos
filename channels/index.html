@@ -34,7 +34,7 @@ $def with (squirrel_url, connection_url, ticket)
                 elem = jq(innerhtml);
                 elem.hide();
                 jq(out).append(elem);
-                elem.show("slide");
+                elem.show('slide', {'direction': 'up'}).effect('highlight');
               }
 
               conn1.on_connect = function() {notify("<p>Connected 1</p>")};
@@ -66,8 +66,8 @@ $def with (squirrel_url, connection_url, ticket)
               receiver('pull', '#pushpull1', conn1);
               receiver('pull', '#pushpull2', conn2);
 
-              // Req/Rep -- two requesters and two repliers,
-              // each both sends and receives
+              // Req/Rep -- two requesters and one replier,
+              // each sends and receives
 
               function requester(channel, form, out, conn) {
                 jq(form).bind('submit', function(event) {
@@ -101,10 +101,8 @@ $def with (squirrel_url, connection_url, ticket)
               }
 
               requester('req', '#reqform1', '#req1', conn1);
-              replier('rep', '#repform1', '#rep1', conn1);
-
               requester('req', '#reqform2', '#req2', conn2);
-              replier('rep', '#repform2', '#rep2', conn2);
+              replier('rep', '#repform1', '#rep1', conn1);
 
               conn1.connect();
               conn2.connect();
@@ -128,7 +126,7 @@ $def with (squirrel_url, connection_url, ticket)
             </p>
             <form id="pubform">
               <input type="text" id="pubinput" name="pubinput"/>
-              <input type="submit" id="pubbutton" name="Publish"/>
+              <input type="submit" id="pubbutton" value="Publish"/>
             </form>
             <div class="out" id="pubsub1">
             </div>
@@ -144,7 +142,7 @@ $def with (squirrel_url, connection_url, ticket)
             </p>
             <form id="pushform">
               <input type="text" id="pushinput" name="pushinput"/>
-              <input type="submit" id="pushbutton" name="Publish"/>
+              <input type="submit" id="pushbutton" value="Push"/>
             </form>
             <div class="out" id="pushpull1">
             </div>
@@ -164,7 +162,7 @@ $def with (squirrel_url, connection_url, ticket)
             <div class="req">
             <form id="reqform1">
               <input type="text" id="reqinput1" name="reqinput"/>
-              <input type="submit" id="reqbutton1" name="Publish"/>
+              <input type="submit" id="reqbutton1" value="Request"/>
             </form>
             <div class="out" id="req1">
             </div>
@@ -173,29 +171,19 @@ $def with (squirrel_url, connection_url, ticket)
             <div class="req">
             <form id="reqform2">
               <input type="text" id="reqinput2" name="reqinput"/>
-              <input type="submit" id="reqbutton2" name="Publish"/>
+              <input type="submit" id="reqbutton2" value="Request"/>
             </form>
             <div class="out" id="req2">
             </div>
             </div>
 
             <div class="req">
-            <form id="repform1">
-              <input type="text" id="repinput1" name="repinput"/>
-              <input type="submit" id="repbutton1" name="Publish"/>
-            </form>
             <div class="out" id="rep1">
             </div>
-            </div>
-
-            <div class="req">
-            <form id="repform2">
-              <input type="text" id="repinput2" name="repinput"/>
-              <input type="submit" id="repbutton2" name="Publish"/>
+            <form id="repform1">
+              <input type="text" id="repinput1" name="repinput"/>
+              <input type="submit" id="repbutton1" value="Reply"/>
             </form>
-
-            <div class="out" id="rep2">
-            </div>
             </div>
 
           </div>
