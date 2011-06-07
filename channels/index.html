@@ -75,6 +75,7 @@ $def with (squirrel_url, connection_url, ticket)
                   event.preventDefault();
                   var question = jq(form).children(':text').val();
                   jq(form).children(':text').val('');
+                  jq(out).children().remove();
                   showMsg(out, '<p>Q:' + question + '</p>');
                   conn.request(channel, question, function(answer) {
                     showMsg(out, '<p>A: ' + answer + '</p>');
@@ -87,6 +88,7 @@ $def with (squirrel_url, connection_url, ticket)
                 initial(form);
                 conn.serve(channel, function(question, _ch, _obj, reply) {
                   disableExcept(form);
+                  jq(out).children().remove();
                   showMsg(out, '<p>Q: ' + question + '</p>');
                   answerer = reply;
                 });
@@ -146,6 +148,7 @@ $def with (squirrel_url, connection_url, ticket)
               <input type="text" id="pubinput" name="pubinput"/>
               <input type="submit" id="pubbutton" value="Publish"/>
             </form>
+            <img class="routing" src="/static/routing.png"/>
             <div class="out" id="pubsub1">
             </div>
             <div class="out" id="pubsub2">
@@ -162,6 +165,7 @@ $def with (squirrel_url, connection_url, ticket)
               <input type="text" id="pushinput" name="pushinput"/>
               <input type="submit" id="pushbutton" value="Push"/>
             </form>
+            <img class="routing" src="/static/routing.png"/>
             <div class="out" id="pushpull1">
             </div>
             <div class="out" id="pushpull2">
@@ -194,6 +198,8 @@ $def with (squirrel_url, connection_url, ticket)
             <div class="out" id="req2">
             </div>
             </div>
+
+            <img class="routing" src="/static/routing2.png"/>
 
             <div class="req">
             <div class="out" id="rep1">

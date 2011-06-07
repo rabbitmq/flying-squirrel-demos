@@ -28,6 +28,7 @@
 
 form {
    clear: both;
+   margin-bottom: 8px;
 }
 
 input[type=text] {
@@ -36,9 +37,25 @@ input[type=text] {
 
 .req {
    float: left;
-   width: 250px;
+   width: 300px;
 }
 
 #pubform, #pushform {
    margin-left: 180px;
+}
+
+#reqform, repform {
+   margin-left: 20px;
+}
+
+.req .out {
+   margin-left: 0;
+   height: 3.1em;
+}
+
+img.routing {
+   clear: both;
+   margin-left:90px;
+   display: block;
+   margin-bottom: 12px;
 }
