@@ -1,0 +1,3 @@
+Users currently online:
+{% for ch in chars %}
+   {{ ch }} ("{{ ch.room }}"){% endfor %}
