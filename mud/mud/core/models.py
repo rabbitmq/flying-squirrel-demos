@@ -75,7 +75,7 @@ class Char(models.Model):
 
     def others_in_room(self):
         for ch in self.room.char_set.all():
-            if ch is not self:
+            if ch != self:
                 yield ch
 
     @classmethod

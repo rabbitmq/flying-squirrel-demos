@@ -3,6 +3,7 @@ all: venv/.ok run
 venv/.ok:
 	virtualenv venv
 	./venv/bin/pip install django
+	./venv/bin/pip install httplib2
 	rm -rf distribute-0.6.10.tar.gz
 	touch venv/.ok
 

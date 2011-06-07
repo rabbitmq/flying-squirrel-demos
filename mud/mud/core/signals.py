@@ -4,6 +4,7 @@ log = logging.getLogger(__name__)
 import datetime
 import django.dispatch
 from . import models
+from . import trigger
 
 
 tick_event = django.dispatch.Signal(providing_args=["curr_time"])
@@ -26,3 +27,11 @@ def cleanup_connections(sender, curr_time=None, **kwargs):
 
 
 tick_event.connect(cleanup_connections)
+
+
+# Load all npc modules.
+def load_npc():
+    for actor in models.Char.objects.filter(is_npc=True):
+        trigger.action('load', actor=actor)
+
+load_npc()

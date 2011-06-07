@@ -125,10 +125,22 @@
         "fields": {
             "description": "Prompter has a sad face. Don't piss him off.", 
             "is_npc": true, 
-            "modified": "2011-06-03", 
+            "modified": "2011-06-03 00:00:00", 
             "nick": "Prompter", 
             "reply": 2, 
             "room": 2
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.char", 
+        "fields": {
+            "description": "Is flying around, whispering to himself:\r\n   http://identi.ca/theinsanebird\r\nThe Bird looks at you and says: I tell you nothing!", 
+            "is_npc": true, 
+            "modified": "2011-06-07 07:14:43", 
+            "nick": "Bird", 
+            "reply": 3, 
+            "room": 6
         }
     }, 
     {
@@ -137,6 +149,14 @@
         "fields": {
             "char": 1, 
             "codepath": "mud.npc.prompter"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.npc", 
+        "fields": {
+            "char": 4, 
+            "codepath": "mud.npc.twitter"
         }
     } 
 ]
