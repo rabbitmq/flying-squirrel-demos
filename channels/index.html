@@ -34,7 +34,8 @@ $def with (squirrel_url, connection_url, ticket)
                 elem = jq(innerhtml);
                 elem.hide();
                 jq(out).append(elem);
-                elem.show('slide', {'direction': 'up'}).effect('highlight');
+                elem.show('slide', {'direction': 'up'});
+                jq(out).effect('highlight');
               }
 
               conn1.on_connect = function() {notify("<p>Connected 1</p>")};
@@ -73,6 +74,7 @@ $def with (squirrel_url, connection_url, ticket)
                 jq(form).bind('submit', function(event) {
                   event.preventDefault();
                   var question = jq(form).children(':text').val();
+                  jq(form).children(':text').val('');
                   showMsg(out, '<p>Q:' + question + '</p>');
                   conn.request(channel, question, function(answer) {
                     showMsg(out, '<p>A: ' + answer + '</p>');
@@ -82,14 +84,18 @@ $def with (squirrel_url, connection_url, ticket)
 
               function replier(channel, form, out, conn) {
                 var answerer = null;
+                initial(form);
                 conn.serve(channel, function(question, _ch, _obj, reply) {
+                  disableExcept(form);
                   showMsg(out, '<p>Q: ' + question + '</p>');
                   answerer = reply;
                 });
                 jq(form).bind('submit', function(event) {
                   event.preventDefault();
                   if (answerer) {
+                    initial();
                     var answer = jq(form).children(':text').val();
+                    jq(form).children(':text').val('');
                     showMsg(out, '<p>A: ' + answer + '</p>');
                     answerer(answer);
                     answerer = null;
@@ -100,9 +106,21 @@ $def with (squirrel_url, connection_url, ticket)
                 });
               }
 
+              function initial() {
+                jq('#reqform1, #reqform2').children('input').attr('disabled', false);
+                jq('#repform1, #repform2').children('input').attr('disabled', true);
+              }
+
+              function disableExcept(form) {
+                jq(form).children('input').attr('disabled', false);
+                jq(form).children('input:text').focus();
+                jq('#reqreptab form').not(form).children('input').attr('disabled', true);
+              }
+
               requester('req', '#reqform1', '#req1', conn1);
               requester('req', '#reqform2', '#req2', conn2);
               replier('rep', '#repform1', '#rep1', conn1);
+              replier('rep', '#repform2', '#rep2', conn2);
 
               conn1.connect();
               conn2.connect();
@@ -183,6 +201,15 @@ $def with (squirrel_url, connection_url, ticket)
             <form id="repform1">
               <input type="text" id="repinput1" name="repinput"/>
               <input type="submit" id="repbutton1" value="Reply"/>
+            </form>
+            </div>
+
+            <div class="req">
+            <div class="out" id="rep2">
+            </div>
+            <form id="repform2">
+              <input type="text" id="repinput2" name="repinput"/>
+              <input type="submit" id="repbutton2" value="Reply"/>
             </form>
             </div>
 
