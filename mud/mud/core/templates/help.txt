@@ -1,0 +1,3 @@
+Available commands:
+{% for cmd, doc in funs %}
+   {{ cmd }}: {{ doc }}{% endfor %}

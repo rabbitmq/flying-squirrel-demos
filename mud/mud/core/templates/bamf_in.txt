@@ -1,0 +1,6 @@
+{% load extras %}
+{% if direction %}
+{{ actor }} enters from {% opposite_long_direction direction %}.
+{% else %}
+{{ actor }} enters from an unknown direction.
+{% endif %}

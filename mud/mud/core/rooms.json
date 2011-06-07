@@ -1,0 +1,162 @@
+[
+    {
+        "pk": 1, 
+        "model": "core.room", 
+        "fields": {
+            "name": "Limbo", 
+            "description": "You float in a formless void, detached from all sensation of physical matter, surrounded by swirling glowing light which fades into the relative darkness around you without any trace of edge or shadow.\r\n"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.room", 
+        "fields": {
+            "name": "The Stage", 
+            "description": "You're standing on a theater stage. Bright light blinds you. Is there anyone at the audience?"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.room", 
+        "fields": {
+            "name": "Foyer", 
+            "description": "The foyer is rather big and spacious. The huge crystal chandelier is covered with spider webs. The room wasn't cleaned for a good while."
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.room", 
+        "fields": {
+            "name": "Backstage", 
+            "description": "Clearly no-one from Health and Safety has been here in a long time. Or someone has and they were killed by falling rigging before they could report back. Dusty ropes and broken glass litter the floor while the rigging continues to threaten overhead."
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.room", 
+        "fields": {
+            "name": "Back alley", 
+            "description": "Evidently this is the neighbourhood for which the word \"insalubrious\" was coined. There's evidence of life here, but only in the form of recently half-eaten dead things. Overflow from the drains is pooling on the pavement and appears to be slowly dissolving it. There's very little lighting down this alley, and frankly it would be better if there were none.\r\n\r\nThe door back inside snicks shut, prompting a brief panic. But it's not locked."
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "core.room", 
+        "fields": {
+            "name": "Really dark bit of the alley", 
+            "description": "It's very dark here. Which is probably a small mercy. All you can hear is the gentle drip, drip, hiss of battery acid, and the scrape of tiny claws on concrete. Lots and lots of tiny claws."
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.exit", 
+        "fields": {
+            "src": 2, 
+            "dst": 3, 
+            "keyword": "e"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.exit", 
+        "fields": {
+            "src": 3, 
+            "dst": 2, 
+            "keyword": "w"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.exit", 
+        "fields": {
+            "src": 2, 
+            "dst": 4, 
+            "keyword": "w"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.exit", 
+        "fields": {
+            "src": 4, 
+            "dst": 2, 
+            "keyword": "e"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.exit", 
+        "fields": {
+            "src": 4, 
+            "dst": 5, 
+            "keyword": "s"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "core.exit", 
+        "fields": {
+            "src": 5, 
+            "dst": 4, 
+            "keyword": "n"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "core.exit", 
+        "fields": {
+            "src": 5, 
+            "dst": 6, 
+            "keyword": "w"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "core.exit", 
+        "fields": {
+            "src": 6, 
+            "dst": 5, 
+            "keyword": "e"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.char", 
+        "fields": {
+            "description": "Prompter has a sad face. Don't piss him off.", 
+            "is_npc": true, 
+            "modified": "2011-06-03 00:00:00", 
+            "nick": "Prompter", 
+            "reply": 2, 
+            "room": 2
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.char", 
+        "fields": {
+            "description": "Is flying around, whispering to himself:\r\n   http://identi.ca/theinsanebird\r\nThe Bird looks at you and says: I tell you nothing!", 
+            "is_npc": true, 
+            "modified": "2011-06-07 07:14:43", 
+            "nick": "Bird", 
+            "reply": 3, 
+            "room": 6
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.npc", 
+        "fields": {
+            "char": 1, 
+            "codepath": "mud.npc.prompter"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.npc", 
+        "fields": {
+            "char": 4, 
+            "codepath": "mud.npc.twitter"
+        }
+    } 
+]
