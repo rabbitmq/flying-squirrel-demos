@@ -1,3 +1,4 @@
+import os
 import urllib
 import httplib2
 import json
@@ -8,9 +9,14 @@ from mud.core import commands
 from mud.core import models
 from mud.core.signals import tick_event
 
+try:
+    os.mkdir('/tmp/.cache')
+except OSError:
+    pass
 
-H = httplib2.Http('.cache')
-H.add_credentials(settings.IDENTICA_USER, settings.IDENTICA_PASS,
+H = httplib2.Http('/tmp/.cache')
+H.add_credentials(settings.IDENTICA_USER,
+                  settings.IDENTICA_PASS,
                   'identi.ca')
 
 def identica_post(status):
@@ -32,6 +38,9 @@ def bird():
 
 
 def got_tell(actor=None, target=None, text=None, **kwargs):
+    if not settings.IDENTICA_USER:
+        commands._do_tell(target, actor, "I tell you nothing!")
+        return
     try:
         tid = identica_post('%s: %s' % (actor, text))
     except Exception, e:
@@ -42,6 +51,8 @@ def got_tell(actor=None, target=None, text=None, **kwargs):
 
 
 def identica_mentions(since_id):
+    if not settings.IDENTICA_USER:
+        return []
     resp, content = H.request('https://identi.ca/api/statuses/mentions.json?%s' %
                               (urllib.urlencode({'since_id': since_id}),),
                               'GET',

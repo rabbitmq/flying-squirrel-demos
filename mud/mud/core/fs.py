@@ -18,7 +18,7 @@ def safe_create_endpoint(name, definition):
         endpoint = api.create_endpoint(name, definition=definition)
     except squirrel.HttpError:
         try:
-            api.delete_endpoint(endpoint)
+            api.delete_endpoint(name)
         except squirrel.HttpError:
             pass
         endpoint = api.create_endpoint(name, definition=definition)

@@ -12,27 +12,12 @@ TOP_DIR = os.path.normpath( pkg_resources.resource_filename(__name__, '.') )
 DJANGO_TOP_DIR = pkg_resources.resource_filename('django','.')
 
 
-
-
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
 MANAGERS = ADMINS
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'db.sqlite',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-    }
-}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -160,5 +145,6 @@ LOGGING = {
     }
 }
 
-SQUIRRUS_URL='http://guest:guest@localhost:55670/socks-api/default'
-SQUIRRUS_LOCAL_URL='http://127.0.0.1:8000/'
+
+from settings_local import *
+TEMPLATE_DEBUG = DEBUG
