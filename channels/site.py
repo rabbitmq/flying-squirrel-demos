@@ -24,12 +24,12 @@ def create_endpoint():
     name = ''.join([random.choice(string.letters) for i in range(10)])
     endpoint = client.create_endpoint(
         name,
-        definition={'pub': ['pub', 'fixme_pubsub'],
-                    'sub': ['sub', 'fixme_pubsub'],
-                    'push': ['push', 'fixme_pushpull'],
-                    'pull': ['pull', 'fixme_pushpull'],
-                    'req': ['req', 'fixme_reqrep'],
-                    'rep': ['rep', 'fixme_reqrep']})
+        definition={'pub': ['pub', name + '_pubsub'],
+                    'sub': ['sub', name + '_pubsub'],
+                    'push': ['push', name + '_pushpull'],
+                    'pull': ['pull', name + '_pushpull'],
+                    'req': ['req', name + '_reqrep'],
+                    'rep': ['rep', name + '_reqrep']})
     ticket = client.generate_ticket(name, 'anon')
     return endpoint['protocols']['socket.io'], ticket
 
