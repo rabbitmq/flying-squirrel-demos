@@ -1,5 +1,8 @@
 ~$
 .pyc$
 channels/config.py
-/venv$
+venv$
 distribute-0.6.10.tar.gz$
+mud/settings_local.py
+mud/settings_local_prod.py
+

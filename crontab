@@ -1,0 +1,1 @@
+* * * * * curl --connect-timeout 2 --silent --fail --out /dev/null http://tales.squirr.us/tick

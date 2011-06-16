@@ -1,5 +1,7 @@
 #!/usr/bin/env python
+from __future__ import with_statement
 
+import os
 import web
 import random
 import string
@@ -34,4 +36,20 @@ def create_endpoint():
     return endpoint['protocols']['socket.io'], ticket
 
 if __name__ == "__main__":
-    app.run()
+    if 'WSGI_DATA' not in os.environ:
+        app.run()
+    else:
+        from flup.server.fcgi import WSGIServer
+
+        from django.utils.daemonize import become_daemon
+        become_daemon(out_log=os.environ['WSGI_DATA']+'/channels_out.log',
+                      err_log=os.environ['WSGI_DATA']+'/channels_err.log')
+
+        with open(os.environ['WSGI_DATA'] + "/channels.pid", "w") as f:
+            f.write("%d\n" % os.getpid())
+
+        web.config.debug = False
+
+        WSGIServer(app.wsgifunc(),
+                   bindAddress='/tmp/fs-channels.sock',
+                   umask=0000).run()

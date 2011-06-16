@@ -4,3 +4,4 @@ httplib2
 fabric
 pycrypto>=2.1
 flup
+web.py

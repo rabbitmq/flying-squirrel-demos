@@ -33,4 +33,3 @@ def action(action, **kwargs):
     if 'target' in kwargs:
         _run_fun(kwargs['target'], 'got_'+action, kwargs)
 
-
