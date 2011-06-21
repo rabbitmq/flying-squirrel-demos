@@ -12,7 +12,7 @@
         "model": "core.room", 
         "fields": {
             "name": "The Stage", 
-            "description": "You're standing on a theater stage. Bright light blinds you. Is there anyone at the audience?"
+            "description": "You're standing on a theatre stage. Bright light blinds you. Is there anyone in the audience? Hard to say. There is an air of expectation, a lacuna."
         }
     }, 
     {
@@ -20,7 +20,7 @@
         "model": "core.room", 
         "fields": {
             "name": "Foyer", 
-            "description": "The foyer is rather big and spacious. The huge crystal chandelier is covered with spider webs. The room wasn't cleaned for a good while."
+            "description": "The foyer is rather grand, if suffused with something of a sense of glory long faded. There are cobwebs on the Damoclean chandelier, and gold paint peeling from the banisters of the giant staircases leading up to the circle. It's a graceful ruin.\r\n\r\nThe ticket office is closed, and has been for some time if that skeleton is anything to go by.\r\n"
         }
     }, 
     {
@@ -28,7 +28,7 @@
         "model": "core.room", 
         "fields": {
             "name": "Backstage", 
-            "description": "Clearly no-one from Health and Safety has been here in a long time. Or someone has and they were killed by falling rigging before they could report back. Dusty ropes and broken glass litter the floor while the rigging continues to threaten overhead."
+            "description": "Clearly no-one from Health and Safety has been here in a long time. Or someone has and they were killed by falling rigging before they could report back. Dusty ropes and broken glass litter the floor while the rigging continues to threaten overhead.\r\n\r\nA short passage leads to a fire exit of the unalarmed variety. At least, it looks pretty calm.\r\n"
         }
     }, 
     {
@@ -45,6 +45,22 @@
         "fields": {
             "name": "Really dark bit of the alley", 
             "description": "It's very dark here. Which is probably a small mercy. All you can hear is the gentle drip, drip, hiss of battery acid, and the scrape of tiny claws on concrete. Lots and lots of tiny claws."
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "core.room", 
+        "fields": {
+            "name": "Busy street", 
+            "description": "It really is bustling out here. Late night shoppers are hurrying towards their next retail experience; tourists clog the pavement clutching their locally-themed ephemera. Buses and cabs vie for control of the street, while cyclists heedlessly stream past and through.\r\n\r\nThe front of the theatre is lit spectacularly, suggesting enticing delights awaiting within. Which is weird. Certainly no-one is being enticed, or emerging delighted.\r\n\r\nOn the next block there's a pleasantly olde-worlde-looking pub, with hanging plants and everything."
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "core.room", 
+        "fields": {
+            "name": "The Chap and Chaos", 
+            "description": "This is very much an old man's pub. The booths are lined with crackled leather seats, and the seats are lined with dour-faced men mumbling into pints. Through a sort of saloon door there's a sports bar, with an ancient television tuned to the racing. Somehow the overall effect is quite cheering.\r\n"
         }
     }, 
     {
@@ -120,14 +136,50 @@
         }
     }, 
     {
+        "pk": 9, 
+        "model": "core.exit", 
+        "fields": {
+            "src": 3, 
+            "dst": 7, 
+            "keyword": "e"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "core.exit", 
+        "fields": {
+            "src": 7, 
+            "dst": 3, 
+            "keyword": "w"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "core.exit", 
+        "fields": {
+            "src": 8, 
+            "dst": 7, 
+            "keyword": "s"
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "core.exit", 
+        "fields": {
+            "src": 7, 
+            "dst": 8, 
+            "keyword": "n"
+        }
+    },
+    {
         "pk": 1, 
         "model": "core.char", 
         "fields": {
-            "description": "Prompter has a sad face. Don't piss him off.", 
+            "description": "The prompt is standing away in the wings, alternating his attention between the action on stage, the prompt book, and his mobile phone.",
             "is_npc": true, 
             "modified": "2011-06-03 00:00:00", 
-            "nick": "Prompter", 
-            "reply": 2, 
+            "nick": "Prompt", 
+            "reply": null, 
             "room": 2
         }
     }, 
@@ -139,8 +191,8 @@
             "is_npc": true, 
             "modified": "2011-06-07 07:14:43", 
             "nick": "Bird", 
-            "reply": 3, 
-            "room": 6
+            "reply": null, 
+            "room": 5
         }
     }, 
     {
@@ -159,4 +211,5 @@
             "codepath": "mud.npc.twitter"
         }
     } 
+
 ]

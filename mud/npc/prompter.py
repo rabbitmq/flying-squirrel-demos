@@ -11,7 +11,7 @@ def probability(n):
     return bool(random.randrange(0, 100) < n)
 
 def prompter():
-    return models.Char.objects.get(nick__exact="Prompter")
+    return models.Char.objects.get(nick__exact="Prompt")
 
 def got_tell(actor=None, target=None, text='', **kwargs):
     if text == 'line' or text == 'line?':
