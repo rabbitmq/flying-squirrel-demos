@@ -1,8 +1,9 @@
+{% load extras %}
 {% if not target.description %}
 Well, {{ target }} is a well-dressed handsome person. One significant 
 detail spoils the image of a good citizen. You can clearly see {{ target|make_list|wordcount }}
 letters tatooed on the forehead: {% for c in target.nick %}"{{ c.upper }}" {% endfor %}.
 Yes, it's definetely {{ target }}.
 {% else %}
-{{ target.description }}
+{{ target.description|break }}
 {% endif %}

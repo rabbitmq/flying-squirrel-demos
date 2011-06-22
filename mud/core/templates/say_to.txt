@@ -1,2 +1,5 @@
-You say: {{ text }}
-
+{% load extras %}
+<div class="say">
+You say:
+<span class="speech">{{ text|break }}</span>
+</div>

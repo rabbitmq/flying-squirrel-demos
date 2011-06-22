@@ -1,1 +1,3 @@
-{{ actor }} shouts: {{ text }}
+<div class="shout">
+<span class="actor">{{ actor }}</span> shouts: <span class="speech">{{ text }}</span>
+</div>

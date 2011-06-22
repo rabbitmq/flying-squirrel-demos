@@ -1,1 +1,5 @@
-{{ actor }} tells you: {{ text }}
+{% load extras %}
+<div class="tell">
+<span class="actor">{{ actor }}</span> tells you:
+<span class="speech">{{ text|break }}</span>
+</div>

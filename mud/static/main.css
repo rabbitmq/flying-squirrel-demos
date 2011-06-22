@@ -17,29 +17,38 @@ body {
     display:inline-block;
     zoom:1;
     *display:inline;
-
     white-space: pre;
 }
 
 #input {
     font-family: inherit;
-    position: fixed;
-    bottom: 20px;
+/*    position: fixed;
+    bottom: 20px; */
     width: inherit;
-    border: 1px solid black;
-    background-color: #DDD;
-
+    border: none;
+    color: #33ff66;
+    outline: none;
+    background-color: #444;
 }
 #input:focus {
-    background-color: #EEE;
-    border: solid 1px #33677F;
-
+   border: 0;
+}
+#prompt {
+   color: #6f9;
 }
 
 .room_name {
-    text-weight: bolder;
-    color: #EEE;
+    font-weight: bolder;
+    color: #33ff66;
 }
 .room_exits {
-    color: #DDD;
+    color: #33ff66;
+}
+
+.actor {
+    color: #33ff66;
+}
+
+.speech {
+    color: #33ff66;
 }
