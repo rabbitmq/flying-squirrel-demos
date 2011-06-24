@@ -11,6 +11,9 @@ def inbound(conn, msg):
         conn.save()
     elif conn.state == 'username':
         nick = filter(lambda c: c in string.letters, msg).capitalize()
+        if not nick:
+            conn.state = "connected"
+            return inbound(conn, '')
         try:
             actor = models.Char.objects.get(nick__exact=nick)
         except models.Char.DoesNotExist:
