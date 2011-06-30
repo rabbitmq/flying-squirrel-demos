@@ -1,7 +1,11 @@
 from .ordereddict import OrderedDict
 from . import models
 from . import trigger
+import random
 
+SPINNING = 2
+STAGGERING = 4
+SLURRING = 6
 
 def do_help(actor, args=None, **kwargs):
     """ Print this help. """
@@ -14,7 +18,19 @@ def do_help(actor, args=None, **kwargs):
 
 def do_say(actor, args=None, **kwargs):
     """ Say something within the room. """
-    _do_say(actor, ' '.join(args))
+    speech = args
+    if actor.drunk > SLURRING:
+        jumble(speech, actor.drunk - SLURRING)
+    _do_say(actor, ' '.join(speech))
+
+def jumble(words, swaps):
+    if swaps <= 0:
+        return
+    ind = random.randint(1, len(words) - 1)
+    s = words[ind]
+    words[ind] = words[ind-1]
+    words[ind-1] = s
+    jumble(words, swaps - 1)
 
 def _do_say(actor, text):
     actor.render("say_to.txt", {'text':text})
@@ -58,17 +74,26 @@ def do_look(actor, args=[], **kwargs):
 
 def do_go(actor, direction=None, **kwargs):
     """ Go in a direction. """
-    e = actor.room.exit(direction)
-    if not e:
-        actor.send("You can't go there.")
+    if actor.drunk >= STAGGERING:
+        actor.render("stagger.txt")
+        e = random.choice(actor.room.exits.all()).dst
+        _do_move(actor, e, direction=direction,
+                 bamf_in="stagger_in.txt", bamf_out="stagger_out.txt")
     else:
-        _do_move(actor, e, direction=direction)
-        actor.save()
+        e = actor.room.exit(direction)
+        if not e:
+            actor.send("You can't go there.")
+            return actor
+        else:
+            _do_move(actor, e, direction=direction)
+    if actor.drunk > 0: actor.drunk -= 1
+    actor.save()
 
-def _do_move(actor, dst_room, direction=None):
+def _do_move(actor, dst_room, direction=None,
+             bamf_in="bamf_in.txt", bamf_out="bamf_out.txt"):
     src_room = actor.room
-    actor.render_to_others("bamf_out.txt", {'direction':direction})
-    dst_room.render("bamf_in.txt", {'actor': actor, 'direction':direction})
+    actor.render_to_others(bamf_out, {'direction':direction})
+    dst_room.render(bamf_in, {'actor': actor, 'direction':direction})
     do_describe_room(actor, dst_room)
     actor.room = dst_room
 

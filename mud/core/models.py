@@ -45,9 +45,9 @@ class Char(models.Model):
     room = models.ForeignKey(Room)
     reply = models.ForeignKey("self", null=True, blank=True)
     is_npc = models.BooleanField(default=False)
+    drunk = models.IntegerField(default=0)
 
     description = models.TextField()
-
 
     def render(self, tname, ctx={}):
         c = {'actor':self, 'room':self.room}

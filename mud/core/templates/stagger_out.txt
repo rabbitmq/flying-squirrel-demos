@@ -1,0 +1,4 @@
+{% load extras %}
+{{ actor }}'s torso goes {% long_direction direction %}, apparently
+against the wishes of {{actor}}'s legs, which have other ideas. The
+legs win.
