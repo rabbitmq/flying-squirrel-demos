@@ -1,3 +1,5 @@
+**Repository [moved to GitHub](https://github.com/rabbitmq/flying-squirrel-demos)**.
+This is a stale read-only repository.
 
 To run the stuff locally:
 
